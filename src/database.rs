@@ -10,11 +10,30 @@ pub static RB: Lazy<Rbatis> = Lazy::new(|| Rbatis::new());
 pub struct Post {
     pub id: Option<i32>,
     pub title: Option<String>,
+    pub image_url: Option<String>,
     pub description: Option<String>
+}
+
+impl Post {
+    pub fn new(title: Option<String>, description: Option<String>, image_url: Option<String>) -> Self {
+        Self {
+            id: None,
+            title,
+            description,
+            image_url
+        }
+    } 
 }
 
 crud!(Post {}, "posts");
 
 pub fn connect_db() {
-    RB.init(MysqlDriver {}, "url-database").unwrap();
+    match RB.init(MysqlDriver {}, "mysql://root:@localhost/app-api-rust-salvo") {
+        Ok(()) => {
+            println!("Database is connecting...");
+        },
+        Err(err) => {
+            println!("{:?}", err);
+        } 
+    }
 }
